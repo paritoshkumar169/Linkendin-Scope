@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -18,9 +18,9 @@ export default function Home() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    // Check if user is authenticated
     const authStatus = localStorage.getItem("isAuthenticated")
     const userData = localStorage.getItem("user")
 
@@ -33,18 +33,29 @@ export default function Home() {
   }, [router])
 
   if (!isAuthenticated) {
-    return null // Don't render anything while checking authentication
+    return null 
+  }
+
+  const handleAddResumeClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      console.log("Selected resume file:", file)
+      // Insert your file upload logic here.
+    }
   }
 
   return (
     <main className="min-h-screen bg-[#f5f1e4]">
       <div className="container mx-auto px-4 py-6">
-        {/* Header */}
         <header className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center">
               <Image
-                src="/images/linkedinscope-logo.png"
+                src="/images/logo.png"
                 alt="LinkedinScope Logo"
                 width={300}
                 height={60}
@@ -63,6 +74,14 @@ export default function Home() {
                     <SelectItem value="resume3">Resume 3</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button
+                  onClick={handleAddResumeClick}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-2 bg-white text-blue-600 border-gray-300"
+                >
+                  Add Resume
+                </Button>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-blue-600 font-medium">|</span>
@@ -82,46 +101,55 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Job Columns */}
+        {/* Hidden file input for resume upload */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+          accept=".pdf,.doc,.docx"
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <JobColumn
             title="NEW JOB LISTINGS"
             filterNumber={4}
             jobs={[
               {
-                title: "Dishwasher",
-                company: "Chipotle Mexican Grill",
-                logo: "/images/chipotle-logo.png",
+                title: "Software Engineer",
+                company: "Google",
+                // logo: "/images/google-logo.png",
                 postedTime: "Posted 2 Minutes Ago",
                 status: "new",
+                salary: "$50,000 - $80,000",
+                level: "Entry Level",
               },
               {
-                title: "Overnight Crew",
-                company: "McDonald's",
-                logo: "/images/mcdonalds-logo.png",
+                title: "Data Scientist",
+                company: "Meta",
+                // logo: "/images/meta-logo.png",
                 postedTime: "Posted 7 Minutes Ago",
                 status: "new",
+                salary: "$100,000 - $120,000",
+                level: "Mid Level",
               },
               {
-                title: "Team Member",
-                company: "Kentucky Fried Chicken",
-                logo: "/images/kfc-logo.png",
+                title: "Cloud Architect",
+                company: "Amazon AWS",
+                // logo: "/images/aws-logo.png",
                 postedTime: "Posted 35 Minutes Ago",
                 status: "new",
+                salary: "$160,000 - $200,000",
+                level: "Senior Level",
               },
               {
-                title: "Drive Through",
-                company: "Wendy's",
-                logo: "/images/wendys-logo.png",
+                title: "Machine Learning Engineer",
+                company: "NVIDIA",
+                // logo: "/images/nvidia-logo.png",
                 postedTime: "Posted 2 Hours Ago",
                 status: "new",
-              },
-              {
-                title: "Sanitation",
-                company: "Taco Bell",
-                logo: "/images/tacobell-logo.png",
-                postedTime: "Posted 3 Hours Ago",
-                status: "new",
+                salary: "$70,000 - $100,000",
+                level: "Mid Level",
               },
             ]}
           />
@@ -131,39 +159,49 @@ export default function Home() {
             filterNumber={5}
             jobs={[
               {
-                title: "Customer Service",
-                company: "Chick-fil-a",
-                logo: "/images/chickfila-logo.png",
+                title: "Frontend Engineer",
+                company: "Netflix",
+                // logo: "/images/netflix-logo.png",
                 postedTime: "Posted 8 Minutes Ago",
                 status: "inProgress",
+                salary: "$55,000 - $70,000",
+                level: "Entry Level",
               },
               {
-                title: "Cashier",
-                company: "Burger King",
-                logo: "/images/burgerking-logo.png",
+                title: "Backend Engineer",
+                company: "Stripe",
+                // logo: "/images/stripe-logo.png",
                 postedTime: "Posted 21 Minutes Ago",
                 status: "inProgress",
+                salary: "$160,000 - $200,000",
+                level: "Mid Level",
               },
               {
-                title: "Pizza Chef",
-                company: "Papa Johns",
-                logo: "/images/papajohns-logo.png",
+                title: "Security Engineer",
+                company: "Tesla",
+                // logo: "/images/tesla-logo.png",
                 postedTime: "Posted 35 Minutes Ago",
                 status: "inProgress",
+                salary: "$145,000 - $175,000",
+                level: "Senior Level",
               },
               {
-                title: "Mobile Orders",
-                company: "Whataburger",
-                logo: "/images/whataburger-logo.png",
+                title: "DevOps Engineer",
+                company: "IBM",
+                // logo: "/images/ibm-logo.png",
                 postedTime: "Posted 42 Minutes Ago",
                 status: "inProgress",
+                salary: "$40,000 - $70,000",
+                level: "Entry Level",
               },
               {
-                title: "Fry Cook",
-                company: "McDonalds",
-                logo: "/images/mcdonalds-logo.png",
+                title: "AI Researcher",
+                company: "OpenAI",
+                // logo: "/images/openai-logo.png",
                 postedTime: "Posted 48 Minutes Ago",
                 status: "inProgress",
+                salary: "$80,000 - $120,000",
+                level: "Senior Level",
               },
             ]}
           />
@@ -173,39 +211,49 @@ export default function Home() {
             filterNumber={3}
             jobs={[
               {
-                title: "Crew Member",
-                company: "White Castle",
-                logo: "/images/whitecastle-logo.png",
+                title: "Embedded Systems Engineer",
+                company: "Apple",
+                // logo: "/images/apple-logo.png",
                 postedTime: "Posted 35 Minutes Ago",
                 status: "applied",
+                salary: "$150,000 - $185,000",
+                level: "Entry Level",
               },
               {
-                title: "Delivery Driver",
-                company: "Pizza Hut",
-                logo: "/images/pizzahut-logo.png",
+                title: "Game Developer",
+                company: "Epic Games",
+                // logo: "/images/epicgames-logo.png",
                 postedTime: "Posted 39 Minutes Ago",
                 status: "applied",
+                salary: "$135,000 - $170,000",
+                level: "Mid Level",
               },
               {
-                title: "Line Cook",
-                company: "In-N-Out Burger",
-                logo: "/images/innout-logo.png",
+                title: "Systems Engineer",
+                company: "Cisco",
+                // logo: "/images/cisco-logo.png",
                 postedTime: "Posted 48 Minutes Ago",
                 status: "applied",
+                salary: "$140,000 - $175,000",
+                level: "Senior Level",
               },
               {
-                title: "Cashier",
-                company: "Chipotle Mexican Grill",
-                logo: "/images/chipotle-logo.png",
+                title: "Software Developer",
+                company: "Adobe",
+                // logo: "/images/adobe-logo.png",
                 postedTime: "Posted 1 Hour Ago",
                 status: "applied",
+                salary: "$130,000 - $160,000",
+                level: "Entry Level",
               },
               {
-                title: "Assistant Manager",
-                company: "Kentucky Fried Chicken",
-                logo: "/images/kfc-logo.png",
+                title: "Data Engineer",
+                company: "Palantir",
+                // logo: "/images/palantir-logo.png",
                 postedTime: "Posted 2 Hours Ago",
                 status: "applied",
+                salary: "$160,000 - $200,000",
+                level: "Mid Level",
               },
             ]}
           />
@@ -214,4 +262,3 @@ export default function Home() {
     </main>
   )
 }
-

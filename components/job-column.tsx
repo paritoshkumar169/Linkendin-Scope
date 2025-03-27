@@ -22,6 +22,8 @@ interface Job {
   logo: string
   postedTime: string
   status: "new" | "inProgress" | "applied"
+  salary: string
+  level: "Entry Level" | "Mid Level" | "Senior Level"
 }
 
 interface JobColumnProps {
@@ -30,11 +32,36 @@ interface JobColumnProps {
   jobs: Job[]
 }
 
+// Helper to parse a salary string like "$150,000 - $180,000"
+const parseSalary = (salaryStr: string) => {
+  const parts = salaryStr.replace(/\$/g, '').replace(/,/g, '').split(' - ')
+  if (parts.length === 2) {
+    const min = parseInt(parts[0], 10)
+    const max = parseInt(parts[1], 10)
+    return { min, max }
+  }
+  return null
+}
+
 export function JobColumn({ title, filterNumber, jobs }: JobColumnProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [jobLevel, setJobLevel] = useState("all")
   const [isRemote, setIsRemote] = useState(false)
   const [salaryRange, setSalaryRange] = useState("all")
+
+  const filteredJobs = jobs.filter((job) => {
+    const matchesLevel = jobLevel === "all" || job.level === jobLevel
+
+    const salaryObj = parseSalary(job.salary)
+    const matchesSalary =
+      salaryRange === "all" ||
+      (salaryRange === "0-30k" && salaryObj && salaryObj.max <= 30000) ||
+      (salaryRange === "30k-60k" && salaryObj && salaryObj.min >= 30000 && salaryObj.max <= 60000) ||
+      (salaryRange === "60k-100k" && salaryObj && salaryObj.min >= 60000 && salaryObj.max <= 100000) ||
+      (salaryRange === "100k+" && salaryObj && salaryObj.min >= 100000)
+
+    return matchesLevel && matchesSalary
+  })
 
   return (
     <div className="bg-[#f5f1e4] rounded-md">
@@ -56,9 +83,9 @@ export function JobColumn({ title, filterNumber, jobs }: JobColumnProps) {
               <h4 className="mb-2 text-sm font-medium">Job Level</h4>
               <DropdownMenuRadioGroup value={jobLevel} onValueChange={setJobLevel}>
                 <DropdownMenuRadioItem value="all">All Levels</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="entry">Entry Level</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="mid">Mid Level</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="senior">Senior Level</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Entry Level">Entry Level</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Mid Level">Mid Level</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Senior Level">Senior Level</DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </div>
 
@@ -77,19 +104,8 @@ export function JobColumn({ title, filterNumber, jobs }: JobColumnProps) {
 
             <DropdownMenuSeparator />
 
-            <div className="p-2 flex items-center space-x-2">
-              <Checkbox id="remote" checked={isRemote} onCheckedChange={(checked) => setIsRemote(checked as boolean)} />
-              <Label htmlFor="remote">Remote Jobs Only</Label>
-            </div>
-
-            <DropdownMenuSeparator />
-
             <div className="p-2 flex justify-end">
-              <Button
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => setIsFilterOpen(false)}
-              >
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsFilterOpen(false)}>
                 Apply Filters
               </Button>
             </div>
@@ -97,7 +113,7 @@ export function JobColumn({ title, filterNumber, jobs }: JobColumnProps) {
         </DropdownMenu>
       </div>
       <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
-        {jobs.map((job, index) => (
+        {filteredJobs.map((job, index) => (
           <JobCard
             key={index}
             title={job.title}
@@ -105,10 +121,11 @@ export function JobColumn({ title, filterNumber, jobs }: JobColumnProps) {
             logo={job.logo}
             postedTime={job.postedTime}
             status={job.status}
+            salary={job.salary}
+            level={job.level}
           />
         ))}
       </div>
     </div>
   )
 }
-

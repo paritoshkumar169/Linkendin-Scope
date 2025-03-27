@@ -31,7 +31,7 @@ export default function LoginPage() {
       } else {
         toast({
           title: "Authentication Error",
-          description: "Invalid credentials. Try username: paritosh, password: paritosh",
+          description: "Invalid credentials. Try Again",
           variant: "destructive",
         })
       }
@@ -64,7 +64,7 @@ export default function LoginPage() {
         <CardHeader className="space-y-1 items-center text-center">
           <div className="mb-4">
             <Image
-              src="/images/linkedinscope-logo.png"
+              src="/images/logo.png"
               alt="LinkedinScope Logo"
               width={250}
               height={50}
