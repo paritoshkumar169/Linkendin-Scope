@@ -4,21 +4,21 @@
 
 Inspired by Photon/Axiom Memescope, this project presents a LinkedIn-style user interface tailored for job searching. Below are examples of the basic UI and authentication pages.
 
-## Screenshots
-
-![Photon UI for Memescope](public/images/Axiom.png)
-
-*Photon UI for Memescope*
-
-![Authentication Page](public/images/Auth.png)
-
-*Authentication Page*
-
-![Landing Page](public/images/Main.png)
-
-*Landing Page*
-
 ## Mock Authentication Credentials
 
 - **Username:** paritosh
 - **Password:** paritosh
+
+## Screenshots
+
+**Axiom UI of Memescope**
+
+<img src="public/images/Axiom.png" alt="Axiom UI of Memescope" width="600">
+
+**Authentication Page**
+
+<img src="public/images/Auth.png" alt="Authentication Page" width="600">
+
+**Landing Page**
+
+<img src="public/images/Main.png" alt="Landing Page" width="600">
